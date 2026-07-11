@@ -1,0 +1,62 @@
+# {{SERVICE_NAME}}
+
+> {{TAGLINE}}. Paid per request via x402 (Base mainnet USDC) or MPP (Tempo USDC). {{PRICE}} per call.
+
+Origin: {{BASE_URL}}. Source: {{REPO_URL}}.
+
+## What this service does
+
+{{DESCRIPTION_1_2_PARAGRAPHS}}
+
+## Endpoints
+
+All paid routes accept both x402 and MPP on the same endpoint. Canonical invocation is POST with a JSON body. GET query-string aliases remain available for browser and manual use, but OpenAPI POST operations are the preferred discovery target.
+
+- `POST /hello` — {{ROUTE_SUMMARY}} ({{PRICE}})
+- `GET /openapi.json` — full OpenAPI 3.1.0 spec
+- `GET /.well-known/x402` — x402 v1 discovery fallback
+- `GET /verify` — service identity, commit SHA, payee addresses
+
+## Payment
+
+Every paid route returns HTTP 402 with both challenge headers:
+
+- `PAYMENT-REQUIRED` — x402 v2 (Base mainnet USDC by default)
+- `WWW-Authenticate: Payment ...` — MPP (Tempo USDC)
+
+Compatible agent clients auto-pay. The fastest onboarding:
+
+```bash
+npx agentcash add {{BASE_URL}}
+```
+
+AgentCash handles both protocols. For protocol-specific clients: `mppx` (MPP), `@x402/fetch` (x402).
+
+## How to verify this service
+
+- **Source verified.** The binary running in production is cryptographically linked to a specific commit of the public source repo at {{REPO_URL}}. Audit provenance at `https://verify.eigencloud.xyz/app/{{APP_ID}}`.
+- **Runs on EigenCompute.** TEE-attested VM with public logs. The `[BOOT]` line identifies the exact commit SHA, facilitator, and payee wallet. Every paid call emits `[PAY] x402 verified` and `[PAY] x402 settled` with the on-chain transfer receipt.
+- **Live identity endpoint.** `GET /verify` returns the current service identity as JSON.
+
+## Triggers — when an agent should call this skill
+
+{{TRIGGER_CONDITIONS}}
+
+Examples of queries where this service should fire:
+- {{EXAMPLE_QUERY_1}}
+- {{EXAMPLE_QUERY_2}}
+- {{EXAMPLE_QUERY_3}}
+
+## Keywords
+
+{{COMMA_SEPARATED_KEYWORDS}}
+
+## Resources
+
+- Landing: {{BASE_URL}}
+- Skill: {{BASE_URL}}/skill.md
+- OpenAPI: {{BASE_URL}}/openapi.json
+- x402 discovery: {{BASE_URL}}/.well-known/x402
+- Verify: {{BASE_URL}}/verify
+- Source: {{REPO_URL}}
+- Framework: https://github.com/mmurrs/dual402

@@ -1,0 +1,1359 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paid API · EigenCompute attestation</title>
+    <meta name="description" content="A paid HTTP API accepting x402 and MPP, verifiably deployed on EigenCompute." />
+    <meta name="theme-color" content="#f4f1ea" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        --paper:      #f4f1ea;
+        --paper-2:    #ebe6da;
+        --paper-3:    #e0dac9;
+        --ink:        #141311;
+        --ink-2:      #3a362f;
+        --ink-3:      #6b6558;
+        --ink-4:      #9a9483;
+        --rule:       #c8c0aa;
+        --rule-soft:  #dbd5c2;
+        --accent:     #b7381d;
+        --accent-2:   #8a2a14;
+        --ok:         #3a5a2a;
+        --bad:        #b7381d;
+
+        --serif: "Newsreader", "Iowan Old Style", "Palatino", Georgia, serif;
+        --sans:  "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        --mono:  "JetBrains Mono", "SF Mono", ui-monospace, Consolas, monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper:      #141311;
+          --paper-2:    #1c1a16;
+          --paper-3:    #24211c;
+          --ink:        #f0ece2;
+          --ink-2:      #d1cbbb;
+          --ink-3:      #8f8976;
+          --ink-4:      #60594a;
+          --rule:       #3a3529;
+          --rule-soft:  #2a261e;
+          --accent:     #e66a4f;
+          --accent-2:   #c44a30;
+          --ok:         #8fb174;
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { background: var(--paper); }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: var(--sans);
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.5;
+        font-size: 15px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        background-image:
+          radial-gradient(rgba(20,19,17,0.025) 1px, transparent 1px);
+        background-size: 3px 3px;
+        background-position: 0 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-image:
+            radial-gradient(rgba(240,236,226,0.018) 1px, transparent 1px);
+        }
+      }
+
+      ::selection { background: var(--accent); color: var(--paper); }
+
+      a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; text-decoration-thickness: 1px; transition: text-decoration-color .15s; }
+      a:hover { text-decoration-color: var(--accent); color: var(--accent); }
+
+      .sheet {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 32px 28px 120px;
+        position: relative;
+      }
+      @media (min-width: 780px) {
+        .sheet { padding: 56px 56px 140px; }
+      }
+
+      /* ═══════════════════════════════════════════════════════ MASTHEAD */
+      .masthead {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 24px;
+        padding-bottom: 18px;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .mark {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mark::before {
+        content: "";
+        display: inline-block;
+        width: 7px; height: 7px;
+        background: var(--ink);
+        transform: rotate(45deg);
+      }
+      .issue {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        color: var(--ink-3);
+        text-align: right;
+        text-transform: uppercase;
+      }
+      .issue .sep { color: var(--rule); margin: 0 8px; }
+      .issue strong { color: var(--ink); font-weight: 500; }
+
+      /* ═══════════════════════════════════════════════════════ HERO */
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 44px 0 36px;
+        border-bottom: 1px solid var(--rule);
+        position: relative;
+      }
+      @media (min-width: 880px) {
+        .hero {
+          grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+          gap: 64px;
+          align-items: start;
+        }
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .eyebrow .dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2.2s ease-in-out infinite;
+      }
+      .eyebrow .dot.offline {
+        background: var(--ink-4);
+        animation: none;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: 0.55; transform: scale(0.85); }
+      }
+
+      h1 {
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: clamp(40px, 6.2vw, 76px);
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+        margin: 0 0 22px;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      h1 .amp {
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+        padding: 0 0.04em;
+      }
+      .lede {
+        font-family: var(--serif);
+        font-size: clamp(18px, 2vw, 22px);
+        line-height: 1.4;
+        font-weight: 400;
+        color: var(--ink-2);
+        margin: 0 0 28px;
+        max-width: 32ch;
+      }
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.04em;
+      }
+      .hero-meta .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 14px;
+        border: 1px solid var(--ink);
+        color: var(--ink);
+        text-transform: uppercase;
+        font-weight: 500;
+        background: var(--paper);
+        margin: 0 -1px -1px 0;
+      }
+      .hero-meta .chip.accent {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .hero-meta .chip.accent.dim {
+        background: var(--accent);
+      }
+
+      /* === Seal === */
+      .seal {
+        position: relative;
+        padding: 28px 24px 22px;
+        border: 1.5px solid var(--ink);
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            transparent 0,
+            transparent 9px,
+            var(--rule-soft) 9px,
+            var(--rule-soft) 10px
+          );
+      }
+      .seal::before, .seal::after {
+        content: "";
+        position: absolute;
+        width: 14px; height: 14px;
+        border: 1.5px solid var(--ink);
+        background: var(--paper);
+      }
+      .seal::before { top: -8px; left: -8px; }
+      .seal::after  { bottom: -8px; right: -8px; }
+      .seal-inner {
+        background: var(--paper);
+        padding: 20px 20px 18px;
+        border: 1px solid var(--ink);
+      }
+      .seal-title {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .seal-title .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--ok);
+      }
+      .seal-title .live::before {
+        content: "";
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--ok);
+        animation: pulse 2.2s ease-in-out infinite;
+      }
+      .seal-title.offline .live { color: var(--ink-4); }
+      .seal-title.offline .live::before { background: var(--ink-4); animation: none; }
+
+      .seal-line {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 10px;
+        padding: 7px 0;
+        border-top: 1px dashed var(--rule);
+        font-size: 12.5px;
+      }
+      .seal-line:first-of-type { border-top: 0; padding-top: 0; }
+      .seal-line dt {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        padding-top: 2px;
+      }
+      .seal-line dd {
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        color: var(--ink);
+        word-break: break-all;
+      }
+      .seal-line dd a { text-decoration-color: var(--rule); }
+
+      /* ═══════════════════════════════════════════════════════ SECTIONS */
+      section {
+        padding: 40px 0 8px;
+        border-bottom: 1px solid var(--rule);
+        position: relative;
+      }
+      section:last-of-type { border-bottom: 0; }
+
+      .sec-head {
+        display: grid;
+        grid-template-columns: 64px 1fr auto;
+        gap: 20px;
+        align-items: baseline;
+        margin-bottom: 28px;
+      }
+      .sec-num {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 26px;
+        color: var(--accent);
+        letter-spacing: -0.01em;
+      }
+      .sec-title {
+        font-family: var(--serif);
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        margin: 0;
+        color: var(--ink);
+      }
+      .sec-sub {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        justify-self: end;
+        padding-top: 8px;
+      }
+      @media (max-width: 620px) {
+        .sec-head { grid-template-columns: 40px 1fr; gap: 14px; }
+        .sec-num { font-size: 20px; }
+        .sec-title { font-size: 22px; }
+        .sec-sub { display: none; }
+      }
+
+      .sec-body {
+        padding-left: 84px;
+      }
+      @media (max-width: 620px) {
+        .sec-body { padding-left: 0; }
+      }
+
+      /* ── provenance grid ── */
+      .ledger {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        border-top: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+      }
+      @media (min-width: 700px) {
+        .ledger {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 130px 1fr auto;
+        gap: 16px;
+        padding: 14px 18px 14px 0;
+        border-top: 1px solid var(--rule);
+        align-items: baseline;
+      }
+      .ledger .row:nth-child(1), .ledger .row:nth-child(2) { border-top: 0; }
+      @media (min-width: 700px) {
+        .ledger .row:nth-child(2n) { padding-left: 18px; border-left: 1px solid var(--rule); }
+      }
+      @media (max-width: 520px) {
+        .row { grid-template-columns: 100px 1fr; }
+        .row .row-tool { grid-column: 1 / -1; justify-self: start; padding-top: 2px; }
+      }
+
+      .row-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        padding-top: 4px;
+      }
+      .row-value {
+        font-family: var(--mono);
+        font-size: 13.5px;
+        color: var(--ink);
+        word-break: break-all;
+        line-height: 1.4;
+      }
+      .row-value .note {
+        display: block;
+        font-family: var(--sans);
+        font-size: 11.5px;
+        color: var(--ink-3);
+        margin-top: 3px;
+      }
+      .row-value.loading {
+        color: var(--ink-4);
+        font-style: italic;
+      }
+      .row-value.loading::after {
+        content: "";
+        display: inline-block;
+        width: 6px; height: 10px;
+        background: var(--ink-4);
+        margin-left: 6px;
+        vertical-align: -1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink { 50% { opacity: 0; } }
+      .row-value.unreachable {
+        color: var(--accent);
+        font-style: italic;
+      }
+      .row-value.unreachable::before {
+        content: "✕ ";
+        font-style: normal;
+      }
+
+      .row-tool {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        background: transparent;
+        border: 1px solid var(--rule);
+        padding: 5px 9px;
+        cursor: pointer;
+        transition: all .12s;
+        font-weight: 500;
+      }
+      .row-tool:hover {
+        border-color: var(--ink);
+        color: var(--ink);
+      }
+      .row-tool.copied {
+        background: var(--ok);
+        border-color: var(--ok);
+        color: var(--paper);
+      }
+
+      /* ── endpoints table ── */
+      .endpoints {
+        border: 1px solid var(--ink);
+        background: var(--paper);
+        position: relative;
+      }
+      .endpoints-head {
+        display: grid;
+        grid-template-columns: 72px 1fr auto;
+        gap: 18px;
+        padding: 12px 22px;
+        border-bottom: 1.5px solid var(--ink);
+        font-family: var(--mono);
+        font-size: 9.5px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        background: var(--paper-2);
+      }
+      .endpoint {
+        display: grid;
+        grid-template-columns: 72px 1fr auto;
+        gap: 18px;
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--rule);
+        align-items: baseline;
+        position: relative;
+        transition: background .14s;
+      }
+      .endpoint:last-child { border-bottom: 0; }
+      .endpoint:hover { background: var(--paper-2); }
+      .endpoint .method {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        color: var(--ink);
+      }
+      .endpoint .method.get  { color: var(--ok); }
+      .endpoint .method.post { color: var(--accent); }
+      .endpoint .method.delete { color: var(--bad); }
+      .endpoint .method.put, .endpoint .method.patch { color: var(--ink-2); }
+      .endpoint .path {
+        font-family: var(--mono);
+        font-size: 17px;
+        font-weight: 500;
+        color: var(--ink);
+        word-break: break-all;
+        margin-bottom: 6px;
+        letter-spacing: -0.01em;
+      }
+      .endpoint .summary {
+        font-family: var(--serif);
+        font-size: 15.5px;
+        color: var(--ink-2);
+        line-height: 1.45;
+      }
+      .endpoint .price {
+        font-family: var(--mono);
+        font-size: 13px;
+        text-align: right;
+        white-space: nowrap;
+      }
+      .endpoint .price .amt {
+        display: block;
+        font-family: var(--serif);
+        font-size: 22px;
+        color: var(--ink);
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+      .endpoint .price .cur {
+        color: var(--ink-3);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      @media (max-width: 620px) {
+        .endpoints-head { grid-template-columns: 52px 1fr auto; padding: 10px 16px; }
+        .endpoint { grid-template-columns: 52px 1fr auto; padding: 16px; }
+        .endpoint .path { font-size: 14px; }
+        .endpoint .summary { font-size: 13.5px; }
+        .endpoint .price .amt { font-size: 17px; }
+      }
+
+      /* ── pay block ── */
+      .pay {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      @media (min-width: 820px) {
+        .pay { grid-template-columns: 1fr 280px; gap: 32px; }
+      }
+      .pay-cmd {
+        position: relative;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 24px 28px 22px;
+      }
+      .pay-cmd-label {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--ink-4);
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .pay-cmd-copy {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        background: transparent;
+        color: var(--ink-4);
+        border: 1px solid var(--ink-4);
+        padding: 4px 9px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all .14s;
+      }
+      .pay-cmd-copy:hover { color: var(--paper); border-color: var(--paper); }
+      .pay-cmd-copy.copied { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+      .pay-cmd-code {
+        font-family: var(--mono);
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: var(--paper);
+        word-break: break-all;
+      }
+      .pay-cmd-code .prompt { color: var(--accent); margin-right: 10px; user-select: none; }
+      .pay-cmd-code .bin { color: var(--ink-4); }
+      .pay-cmd-sub {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--ink-3);
+        font-family: var(--sans);
+        font-size: 12.5px;
+        color: var(--ink-4);
+        line-height: 1.5;
+      }
+      .pay-cmd-sub code {
+        font-family: var(--mono);
+        color: var(--paper);
+        font-size: 11.5px;
+        background: rgba(255,255,255,.08);
+        padding: 1px 6px;
+      }
+
+      .pay-aside {
+        padding: 24px 24px;
+        border: 1px solid var(--rule);
+        background: var(--paper-2);
+      }
+      .pay-aside h3 {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0 0 12px;
+      }
+      .pay-aside p {
+        font-family: var(--serif);
+        font-size: 15.5px;
+        line-height: 1.4;
+        color: var(--ink-2);
+        margin: 0 0 14px;
+      }
+      .pay-aside ul {
+        list-style: none;
+        padding: 0; margin: 0;
+        font-family: var(--mono);
+        font-size: 12.5px;
+      }
+      .pay-aside li {
+        padding: 6px 0;
+        border-top: 1px dashed var(--rule);
+      }
+      .pay-aside li:first-child { border-top: 0; }
+
+      /* ── audit links ── */
+      .audit {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      @media (min-width: 680px) {
+        .audit { grid-template-columns: repeat(3, 1fr); }
+      }
+      .audit-link {
+        display: block;
+        padding: 20px 22px;
+        border: 1px solid var(--rule);
+        margin: -1px 0 0 -1px;
+        text-decoration: none;
+        color: var(--ink);
+        transition: background .14s;
+        background: var(--paper);
+      }
+      .audit-link:hover { background: var(--paper-2); color: var(--ink); }
+      .audit-link .key {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 8px;
+      }
+      .audit-link .val {
+        font-family: var(--serif);
+        font-size: 18px;
+        color: var(--ink);
+        margin-bottom: 4px;
+        line-height: 1.2;
+      }
+      .audit-link .url {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        color: var(--ink-3);
+        word-break: break-all;
+      }
+      .audit-link:hover .url { color: var(--accent); }
+
+      /* ── footer ── */
+      footer.colophon {
+        margin-top: 80px;
+        padding: 28px 0 0;
+        border-top: 1.5px solid var(--ink);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      @media (min-width: 780px) {
+        footer.colophon { grid-template-columns: 1fr auto; align-items: end; }
+      }
+      .colophon-text {
+        font-family: var(--serif);
+        font-size: 14px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        max-width: 68ch;
+      }
+      .colophon-text a { font-weight: 500; }
+      .colophon-meta {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        text-align: right;
+        line-height: 1.8;
+      }
+
+      /* Refresh button */
+      .refresh {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        background: transparent;
+        color: var(--ink-3);
+        border: 1px solid var(--rule);
+        padding: 5px 10px;
+        cursor: pointer;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all .14s;
+      }
+      .refresh:hover { color: var(--ink); border-color: var(--ink); }
+      .refresh.spinning .arrow { animation: spin 0.9s linear infinite; transform-origin: center; display: inline-block; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* reveal on load */
+      .reveal { opacity: 0; transform: translateY(6px); animation: reveal .6s cubic-bezier(.2,.7,.3,1) forwards; }
+      .reveal.d1 { animation-delay: .05s; }
+      .reveal.d2 { animation-delay: .15s; }
+      .reveal.d3 { animation-delay: .25s; }
+      .reveal.d4 { animation-delay: .35s; }
+      .reveal.d5 { animation-delay: .45s; }
+      @keyframes reveal {
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <div class="masthead reveal d1">
+        <div class="mark">Dual&#8209;402 <span aria-hidden="true">·</span> Verifiable Compute Attestation</div>
+        <div class="issue" id="masthead-issue">
+          <strong>Issue</strong> <span id="issue-commit">—</span>
+          <span class="sep">·</span>
+          <strong id="issue-date">—</strong>
+        </div>
+      </div>
+
+      <section class="hero reveal d2" aria-labelledby="service-name">
+        <div>
+          <p class="eyebrow" id="hero-status">
+            <span class="dot" id="hero-dot"></span>
+            <span id="hero-status-text">Verifying attestation…</span>
+          </p>
+          <h1 id="service-name">Paid API, <span class="amp">&amp;</span> the receipts to prove it.</h1>
+          <p class="lede" id="service-lede">
+            A paid HTTP API that accepts x402 on Base and MPP on Tempo, running inside a TEE on EigenCompute. Every request returns a greeting. Every line below is independently auditable.
+          </p>
+          <div class="hero-meta" id="hero-meta">
+            <span class="chip accent" id="chip-env">—</span>
+            <span class="chip" id="chip-x402">x402 · Base</span>
+            <span class="chip" id="chip-mpp">MPP · Tempo</span>
+          </div>
+        </div>
+        <aside class="seal" aria-label="Live status seal">
+          <div class="seal-inner">
+            <div class="seal-title" id="seal-title">
+              <span>Attestation</span>
+              <span class="live" id="seal-live">Live</span>
+            </div>
+            <dl style="margin:0;">
+              <div class="seal-line"><dt>Service</dt><dd id="seal-service">—</dd></div>
+              <div class="seal-line"><dt>Version</dt><dd id="seal-version">—</dd></div>
+              <div class="seal-line"><dt>Network</dt><dd id="seal-network">—</dd></div>
+              <div class="seal-line"><dt>Built</dt><dd id="seal-built">—</dd></div>
+              <div class="seal-line"><dt>Proof</dt><dd id="seal-proof">—</dd></div>
+            </dl>
+          </div>
+        </aside>
+      </section>
+
+      <section class="reveal d3" aria-labelledby="sec-1">
+        <header class="sec-head">
+          <div class="sec-num">§ 01</div>
+          <h2 class="sec-title" id="sec-1">Provenance</h2>
+          <div class="sec-sub">
+            <button class="refresh" id="refresh-btn" type="button" title="Re-fetch /verify">
+              <span class="arrow">↻</span> Re-verify
+            </button>
+          </div>
+        </header>
+        <div class="sec-body">
+          <p style="font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);margin:0 0 26px;max-width:60ch;">
+            What's running is what's on GitHub. The commit below was built reproducibly and deployed into an EigenCompute TEE; the same hash will show on the verifier dashboard and on-chain.
+          </p>
+          <dl class="ledger" id="ledger">
+            <!-- filled by JS; skeleton rendered below -->
+            <div class="row"><div class="row-label">Service</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">Environment</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">Commit</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">Repository</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">Built at</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">App ID</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">x402 payee</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">MPP payee</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">Facilitator</div><div class="row-value loading">reading</div></div>
+            <div class="row"><div class="row-label">MPP rail</div><div class="row-value loading">reading</div></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="reveal d4" aria-labelledby="sec-2">
+        <header class="sec-head">
+          <div class="sec-num">§ 02</div>
+          <h2 class="sec-title" id="sec-2">Priced routes</h2>
+          <div class="sec-sub" id="routes-count">— routes</div>
+        </header>
+        <div class="sec-body">
+          <p style="font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);margin:0 0 22px;max-width:60ch;">
+            Every route returns <code style="font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 6px;">402 Payment Required</code> until a payment header is attached. Prices are declared in the route's OpenAPI spec under <code style="font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 6px;">x-payment-info</code>.
+          </p>
+          <div class="endpoints" id="endpoints">
+            <div class="endpoints-head">
+              <div>Method</div>
+              <div>Path · Purpose</div>
+              <div style="text-align:right;">Price</div>
+            </div>
+            <div class="endpoint">
+              <div class="method">—</div>
+              <div>
+                <div class="path loading-text" style="font-style:italic;color:var(--ink-4);">reading /openapi.json</div>
+              </div>
+              <div class="price"><span class="amt">—</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal d4" aria-labelledby="sec-3">
+        <header class="sec-head">
+          <div class="sec-num">§ 03</div>
+          <h2 class="sec-title" id="sec-3">Call this API</h2>
+          <div class="sec-sub">One line · Any agent</div>
+        </header>
+        <div class="sec-body">
+          <div class="pay">
+            <div class="pay-cmd">
+              <div class="pay-cmd-label">
+                <span>Terminal · AgentCash</span>
+                <button class="pay-cmd-copy" id="pay-copy" type="button">Copy</button>
+              </div>
+              <div class="pay-cmd-code" id="pay-cmd">
+                <span class="prompt">$</span><span class="bin">npx</span> agentcash add <span id="origin-inline">your-origin</span>
+              </div>
+              <p class="pay-cmd-sub">
+                Registers this origin with AgentCash so any agent with a funded wallet can hit the paid routes over x402 or MPP. Or bring your own client: <code>@x402/fetch</code>, <code>mppx</code>, or raw HTTP with a payment header.
+              </p>
+            </div>
+            <aside class="pay-aside">
+              <h3>How payment works</h3>
+              <p>Client hits a route. Server returns 402 with a price quote. Client attaches USDC payment; the server verifies it, settles, and returns the result — all on the same round trip.</p>
+              <ul>
+                <li>x402 · USDC on Base</li>
+                <li>MPP · USDC on Tempo</li>
+                <li>Settled in one round trip</li>
+                <li>No account, no key, no form</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal d5" aria-labelledby="sec-4">
+        <header class="sec-head">
+          <div class="sec-num">§ 04</div>
+          <h2 class="sec-title" id="sec-4">Audit directly</h2>
+          <div class="sec-sub">Raw sources</div>
+        </header>
+        <div class="sec-body">
+          <div class="audit">
+            <a class="audit-link" href="/verify" target="_blank" rel="noopener">
+              <div class="key">Live identity</div>
+              <div class="val">/verify</div>
+              <div class="url">service, commit, payees</div>
+            </a>
+            <a class="audit-link" href="/openapi.json" target="_blank" rel="noopener">
+              <div class="key">API schema</div>
+              <div class="val">/openapi.json</div>
+              <div class="url">routes, prices, payloads</div>
+            </a>
+            <a class="audit-link" href="/.well-known/x402" target="_blank" rel="noopener">
+              <div class="key">x402 discovery</div>
+              <div class="val">/.well-known/x402</div>
+              <div class="url">facilitator, network, scheme</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="colophon reveal d5">
+        <div class="colophon-text">
+          Built with <a href="https://github.com/mmurrs/dual-402" target="_blank" rel="noopener">dual&#8209;402</a>, the middleware that speaks both x402 and MPP on a single route. Deployed on <a href="https://eigencloud.xyz" target="_blank" rel="noopener">EigenCompute</a>. Cloned from the <a href="https://github.com/mmurrs/dual402-starter" target="_blank" rel="noopener">dual402-starter</a>. Fork it, rename it, ship your own.
+        </div>
+        <div class="colophon-meta">
+          <div id="colophon-service">—</div>
+          <div id="colophon-commit">—</div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      "use strict";
+
+      const origin = location.origin;
+      const originHost = location.host;
+
+      const $ = (id) => document.getElementById(id);
+
+      // ─────────────────────────── utilities
+      const shortHex = (h, head = 6, tail = 4) => {
+        if (!h || typeof h !== "string") return "—";
+        if (h.length <= head + tail + 3) return h;
+        return `${h.slice(0, head)}…${h.slice(-tail)}`;
+      };
+
+      const basescanAddr = (a) => a ? `https://basescan.org/address/${a}` : null;
+
+      const copyToClipboard = async (text, btn) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (btn) {
+            const prev = btn.textContent;
+            btn.classList.add("copied");
+            btn.textContent = "Copied";
+            setTimeout(() => {
+              btn.textContent = prev;
+              btn.classList.remove("copied");
+            }, 1400);
+          }
+        } catch (_) {
+          /* noop */
+        }
+      };
+
+      const fmtDate = (iso) => {
+        if (!iso) return "—";
+        try {
+          const d = new Date(iso);
+          if (isNaN(d)) return iso;
+          const s = d.toISOString().replace("T", " ").replace(/\.\d+Z$/, "Z");
+          return s;
+        } catch { return iso; }
+      };
+
+      const fmtDateShort = (iso) => {
+        if (!iso) return "—";
+        try {
+          const d = new Date(iso);
+          if (isNaN(d)) return iso;
+          const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()];
+          return `${m} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+        } catch { return iso; }
+      };
+
+      // ─────────────────────────── row builder
+      // pairs: [{ label, value, href?, copy?, note?, state? 'ok'|'unreachable'|'loading' }]
+      const renderLedger = (pairs) => {
+        const ledger = $("ledger");
+        ledger.innerHTML = "";
+        for (const p of pairs) {
+          const row = document.createElement("div");
+          row.className = "row";
+
+          const lab = document.createElement("div");
+          lab.className = "row-label";
+          lab.textContent = p.label;
+
+          const val = document.createElement("div");
+          val.className = "row-value";
+          if (p.state === "unreachable") val.classList.add("unreachable");
+          if (p.state === "loading") val.classList.add("loading");
+
+          if (p.href && p.state !== "unreachable") {
+            const a = document.createElement("a");
+            a.href = p.href;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.textContent = p.value || "—";
+            val.appendChild(a);
+          } else {
+            val.textContent = p.value || "—";
+          }
+          if (p.note) {
+            const n = document.createElement("span");
+            n.className = "note";
+            n.textContent = p.note;
+            val.appendChild(n);
+          }
+
+          row.appendChild(lab);
+          row.appendChild(val);
+
+          if (p.copy) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "row-tool";
+            btn.textContent = "Copy";
+            btn.setAttribute("aria-label", `Copy ${p.label}`);
+            btn.addEventListener("click", () => copyToClipboard(p.copy, btn));
+            row.appendChild(btn);
+          }
+
+          ledger.appendChild(row);
+        }
+      };
+
+      // ─────────────────────────── fetchers
+      const fetchJSON = async (path) => {
+        try {
+          const r = await fetch(path, { cache: "no-store" });
+          if (!r.ok) throw new Error(`${path} → ${r.status}`);
+          return { ok: true, data: await r.json() };
+        } catch (err) {
+          console.error(err);
+          return { ok: false, error: String(err) };
+        }
+      };
+
+      // ─────────────────────────── renderers
+      const renderMasthead = (v) => {
+        if (v?.code?.commit) {
+          $("issue-commit").textContent = v.code.commit.slice(0, 7);
+        } else {
+          $("issue-commit").textContent = "unknown";
+        }
+        if (v?.code?.built_at) {
+          $("issue-date").textContent = fmtDateShort(v.code.built_at);
+        } else {
+          $("issue-date").textContent = "—";
+        }
+      };
+
+      const renderHero = (v, verifyOk) => {
+        if (v?.service?.name) {
+          const name = v.service.name;
+          document.title = `${name} · paid API on EigenCompute`;
+          // craft an h1 that uses the service name naturally
+          const h1 = $("service-name");
+          h1.innerHTML = `${escapeHTML(name)} <span class="amp">&amp;</span> the receipts to prove it.`;
+        }
+
+        if (v?.runtime?.environment) {
+          $("chip-env").textContent = v.runtime.environment;
+        } else {
+          $("chip-env").textContent = "offline";
+        }
+
+        const dot = $("hero-dot");
+        const text = $("hero-status-text");
+        const sealTitle = $("seal-title");
+        const sealLive = $("seal-live");
+        if (verifyOk) {
+          dot.classList.remove("offline");
+          text.textContent = "Live · attestation verified";
+          sealTitle.classList.remove("offline");
+          sealLive.textContent = "Live";
+        } else {
+          dot.classList.add("offline");
+          text.textContent = "Attestation unreachable";
+          sealTitle.classList.add("offline");
+          sealLive.textContent = "Offline";
+        }
+      };
+
+      const renderSeal = (v) => {
+        if (!v) {
+          const ids = ["seal-service","seal-version","seal-network","seal-built","seal-proof"];
+          ids.forEach(id => { $(id).textContent = "unreachable"; });
+          return;
+        }
+        $("seal-service").textContent = v.service?.name || "—";
+        $("seal-version").textContent = v.service?.version ? `v${v.service.version}` : "—";
+        $("seal-network").textContent = (v.payment?.x402?.network || "—").replace("eip155:8453","Base (8453)");
+        $("seal-built").textContent = fmtDateShort(v.code?.built_at);
+
+        const proofEl = $("seal-proof");
+        proofEl.innerHTML = "";
+        if (v.runtime?.app_id) {
+          const a = document.createElement("a");
+          a.href = `https://verify.eigencloud.xyz/app/${v.runtime.app_id}`;
+          a.target = "_blank"; a.rel = "noopener";
+          a.textContent = shortHex(v.runtime.app_id, 6, 4);
+          proofEl.appendChild(a);
+        } else {
+          proofEl.textContent = "pending";
+        }
+      };
+
+      const renderProvenance = (v) => {
+        if (!v) {
+          const labels = ["Service","Environment","Commit","Repository","Built at","App ID","x402 payee","MPP payee","Facilitator","MPP rail"];
+          renderLedger(labels.map(l => ({ label: l, value: "unreachable", state: "unreachable" })));
+          return;
+        }
+
+        const commitShort = v.code?.commit ? v.code.commit.slice(0, 12) : null;
+        const repo = v.code?.repo;
+        const commitHref = (repo && v.code?.commit) ? `${repo}/tree/${v.code.commit}` : null;
+        const appId = v.runtime?.app_id;
+        const payeeX = v.payment?.x402?.payee;
+        const payeeM = v.payment?.mpp?.payee;
+
+        const pairs = [
+          {
+            label: "Service",
+            value: `${v.service?.name || "?"} · v${v.service?.version || "?"}`,
+          },
+          {
+            label: "Environment",
+            value: v.runtime?.environment || "—",
+            note: v.payment?.x402?.network === "eip155:8453" ? "Base mainnet · chain id 8453" : null,
+          },
+          {
+            label: "Commit",
+            value: commitShort || "unknown",
+            href: commitHref,
+            copy: v.code?.commit,
+            note: v.code?.commit ? "verifies against the source below" : null,
+            state: v.code?.commit ? "ok" : "unreachable",
+          },
+          {
+            label: "Repository",
+            value: repo ? repo.replace(/^https?:\/\//, "") : "unknown",
+            href: repo,
+            state: repo ? "ok" : "unreachable",
+          },
+          {
+            label: "Built at",
+            value: fmtDate(v.code?.built_at),
+            state: v.code?.built_at ? "ok" : "unreachable",
+          },
+          {
+            label: "App ID",
+            value: appId ? shortHex(appId, 8, 6) : "pending attestation",
+            href: appId ? `https://verify.eigencloud.xyz/app/${appId}` : null,
+            copy: appId || undefined,
+            note: appId ? "verify.eigencloud.xyz" : "runtime has not emitted an app_id yet",
+            state: appId ? "ok" : "loading",
+          },
+          {
+            label: "x402 payee",
+            value: payeeX ? shortHex(payeeX, 8, 6) : "—",
+            href: basescanAddr(payeeX),
+            copy: payeeX || undefined,
+            note: payeeX ? "basescan.org" : null,
+            state: payeeX ? "ok" : "unreachable",
+          },
+          {
+            label: "MPP payee",
+            value: payeeM ? shortHex(payeeM, 8, 6) : "—",
+            href: basescanAddr(payeeM),
+            copy: payeeM || undefined,
+            note: payeeM ? "basescan.org · rail: tempo" : null,
+            state: payeeM ? "ok" : "unreachable",
+          },
+          {
+            label: "Facilitator",
+            value: v.payment?.x402?.facilitator || "—",
+            state: v.payment?.x402?.facilitator ? "ok" : "unreachable",
+          },
+          {
+            label: "MPP rail",
+            value: v.payment?.mpp?.rail || "—",
+            state: v.payment?.mpp?.rail ? "ok" : "unreachable",
+          },
+        ];
+        renderLedger(pairs);
+      };
+
+      const renderEndpoints = (spec, ok) => {
+        const container = $("endpoints");
+        const countEl = $("routes-count");
+        if (!ok || !spec?.paths) {
+          container.innerHTML = `
+            <div class="endpoints-head">
+              <div>Method</div>
+              <div>Path · Purpose</div>
+              <div style="text-align:right;">Price</div>
+            </div>
+            <div class="endpoint">
+              <div class="method"></div>
+              <div>
+                <div class="path" style="color:var(--accent);font-style:italic;">/openapi.json unreachable</div>
+                <div class="summary">Routes could not be loaded. Live identity still confirms the service is up.</div>
+              </div>
+              <div class="price"><span class="amt">—</span></div>
+            </div>`;
+          countEl.textContent = "offline";
+          return;
+        }
+
+        const rows = [];
+        for (const [path, methods] of Object.entries(spec.paths)) {
+          for (const [method, op] of Object.entries(methods)) {
+            if (!op || typeof op !== "object" || Array.isArray(op)) continue;
+            if (!["get","post","put","patch","delete"].includes(method.toLowerCase())) continue;
+
+            const pay = op["x-payment-info"];
+            const amount = pay?.price?.amount || null;
+            const currency = pay?.price?.currency || "USD";
+            const textPriceMatch = (op.summary || op.description || "").match(/\$([\d.]+)/);
+
+            rows.push({
+              method: method.toUpperCase(),
+              path,
+              summary: op.summary || op.description || "",
+              amount: amount || (textPriceMatch ? textPriceMatch[1] : null),
+              currency,
+              isPaid: !!pay,
+            });
+          }
+        }
+
+        if (rows.length === 0) {
+          container.innerHTML = `
+            <div class="endpoints-head">
+              <div>Method</div>
+              <div>Path · Purpose</div>
+              <div style="text-align:right;">Price</div>
+            </div>
+            <div class="endpoint">
+              <div class="method"></div>
+              <div><div class="path" style="color:var(--ink-3);">No routes declared in /openapi.json.</div></div>
+              <div class="price"><span class="amt">—</span></div>
+            </div>`;
+          countEl.textContent = "0 routes";
+          return;
+        }
+
+        // sort: paid first by method, then by path
+        rows.sort((a, b) => {
+          if (a.isPaid !== b.isPaid) return a.isPaid ? -1 : 1;
+          if (a.path !== b.path) return a.path.localeCompare(b.path);
+          return a.method.localeCompare(b.method);
+        });
+
+        let html = `
+          <div class="endpoints-head">
+            <div>Method</div>
+            <div>Path · Purpose</div>
+            <div style="text-align:right;">Price</div>
+          </div>`;
+
+        for (const r of rows) {
+          const methodClass = r.method.toLowerCase();
+          const priceHtml = r.amount
+            ? `<span class="amt">$${r.amount}</span><span class="cur">${r.currency}</span>`
+            : `<span class="amt" style="color:var(--ink-3);">free</span>`;
+          html += `
+            <div class="endpoint">
+              <div class="method ${methodClass}">${r.method}</div>
+              <div>
+                <div class="path">${escapeHTML(r.path)}</div>
+                ${r.summary ? `<div class="summary">${escapeHTML(r.summary)}</div>` : ""}
+              </div>
+              <div class="price">${priceHtml}</div>
+            </div>`;
+        }
+
+        container.innerHTML = html;
+        const paidCount = rows.filter(r => r.isPaid).length;
+        countEl.textContent = `${rows.length} route${rows.length === 1 ? "" : "s"} · ${paidCount} paid`;
+      };
+
+      const renderPayCmd = () => {
+        $("origin-inline").textContent = origin;
+        const payCmd = `npx agentcash add ${origin}`;
+        $("pay-copy").addEventListener("click", () =>
+          copyToClipboard(payCmd, $("pay-copy"))
+        );
+      };
+
+      const renderColophon = (v) => {
+        if (v?.service?.name) {
+          $("colophon-service").textContent = v.service.name.toUpperCase();
+        } else {
+          $("colophon-service").textContent = originHost.toUpperCase();
+        }
+        if (v?.code?.commit) {
+          $("colophon-commit").textContent = `commit · ${v.code.commit.slice(0, 10)}`;
+        } else {
+          $("colophon-commit").textContent = "commit · unknown";
+        }
+      };
+
+      const escapeHTML = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+
+      // ─────────────────────────── main
+      const loadAll = async (isRefresh = false) => {
+        const btn = $("refresh-btn");
+        if (isRefresh) btn.classList.add("spinning");
+
+        const [verifyRes, specRes] = await Promise.all([
+          fetchJSON("/verify"),
+          fetchJSON("/openapi.json"),
+        ]);
+
+        const v = verifyRes.ok ? verifyRes.data : null;
+        const spec = specRes.ok ? specRes.data : null;
+
+        renderMasthead(v);
+        renderHero(v, verifyRes.ok);
+        renderSeal(v);
+        renderProvenance(v);
+        renderEndpoints(spec, specRes.ok);
+        renderColophon(v);
+
+        if (isRefresh) {
+          setTimeout(() => btn.classList.remove("spinning"), 400);
+        }
+      };
+
+      renderPayCmd();
+      loadAll(false);
+
+      $("refresh-btn").addEventListener("click", () => loadAll(true));
+
+      // Keyboard: press R to re-verify
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "r" && !e.metaKey && !e.ctrlKey && !e.altKey &&
+            document.activeElement === document.body) {
+          loadAll(true);
+        }
+      });
+    </script>
+  </body>
+</html>
