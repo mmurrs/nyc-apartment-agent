@@ -1,21 +1,26 @@
-# {{SERVICE_NAME}}
+# nyc-apartment-agent
 
-> {{TAGLINE}}. Paid per request via x402 (Base mainnet USDC) or MPP (Tempo USDC). {{PRICE}} per call.
+> Natural-language NYC apartment search for agents and personal workflows. Paid per request via x402 (Base mainnet USDC) or MPP (Tempo USDC). 0.10 USDC per call.
 
-Origin: {{BASE_URL}}. Source: {{REPO_URL}}.
+Origin: {{BASE_URL}}. Source: https://github.com/mmurrs/nyc-apartment-agent.
 
 ## What this service does
 
-{{DESCRIPTION_1_2_PARAGRAPHS}}
+NYC apartment hunting is constraint-rich ("studio or 1BR in East Village under $3500, short walk to the L, natural light, Citi Bike nearby") and no incumbent exposes an agent-callable API — StreetEasy and RentReboot email humans. This endpoint answers agents in JSON: it parses natural-language constraints, fans out to StreetEasy (paid render), The Listings Project, Craigslist, and optionally Facebook Marketplace, then returns ranked listings with subway walk times and live Citi Bike dock availability. The service pays for its own upstream inputs per request and includes the receipts in the response.
+
+For a recurring watch ("morning report"), call /report with the previous run's all_ids: you get back only listings you haven't seen.
 
 ## Endpoints
 
-All paid routes accept both x402 and MPP on the same endpoint. Canonical invocation is POST with a JSON body. GET query-string aliases remain available for browser and manual use, but OpenAPI POST operations are the preferred discovery target.
+All paid routes accept both x402 and MPP on the same endpoint. Canonical invocation is POST with a JSON body.
 
-- `POST /hello` — {{ROUTE_SUMMARY}} ({{PRICE}})
+- `POST /search` — one-shot NL apartment search, ranked results (0.10 USDC)
+- `GET /search?query=...` — query-string alias (0.10 USDC)
+- `POST /report` — diff-based watch: {query, last_seen_ids} in, new_listings + all_ids out (0.10 USDC)
 - `GET /openapi.json` — full OpenAPI 3.1.0 spec
 - `GET /.well-known/x402` — x402 v1 discovery fallback
 - `GET /verify` — service identity, commit SHA, payee addresses
+- `GET /healthz` — liveness + configured capabilities
 
 ## Payment
 
@@ -34,22 +39,31 @@ AgentCash handles both protocols. For protocol-specific clients: `mppx` (MPP), `
 
 ## How to verify this service
 
-- **Source verified.** The binary running in production is cryptographically linked to a specific commit of the public source repo at {{REPO_URL}}. Audit provenance at `https://verify.eigencloud.xyz/app/{{APP_ID}}`.
-- **Runs on EigenCompute.** TEE-attested VM with public logs. The `[BOOT]` line identifies the exact commit SHA, facilitator, and payee wallet. Every paid call emits `[PAY] x402 verified` and `[PAY] x402 settled` with the on-chain transfer receipt.
+- **Source verified.** The binary running in production is cryptographically linked to a specific commit of the public source repo. Audit provenance at `https://verify.eigencloud.xyz/app/{{APP_ID}}`.
+- **Runs on EigenCompute.** TEE-attested VM with public logs. The `[BOOT]` line identifies the exact commit SHA, facilitator, and payee wallet.
 - **Live identity endpoint.** `GET /verify` returns the current service identity as JSON.
+- **Receipts.** Each response lists what the service paid upstream (service, route, usd, tx) to produce your answer.
 
 ## Triggers — when an agent should call this skill
 
-{{TRIGGER_CONDITIONS}}
+Any request to find, monitor, or compare apartments/sublets/rooms in New York City, with any mix of budget, neighborhood, bedrooms, transit, or quality-of-life constraints. Also recurring daily/hourly "what's new" apartment watches.
 
 Examples of queries where this service should fire:
-- {{EXAMPLE_QUERY_1}}
-- {{EXAMPLE_QUERY_2}}
-- {{EXAMPLE_QUERY_3}}
+- "Find me a 1 bed or studio in East Village under $3500 within a 15 minute walk of the train, with natural light"
+- "What new apartments popped up in Williamsburg overnight under $4k?"
+- "Set up a morning report for pet-friendly 2BRs in Astoria with laundry"
 
 ## Keywords
 
-{{COMMA_SEPARATED_KEYWORDS}}
+nyc apartments, apartment search, rental listings, streeteasy, listings project, craigslist housing, facebook marketplace rentals, sublet, studio, one bedroom, east village, williamsburg, brooklyn rentals, apartment hunt, morning report, new listings alert, citi bike, subway walk time, natural light
+
+## Sources and honesty
+
+- streeteasy: broadest broker inventory; served via paid render (~$0.013 upstream, included in your 0.10)
+- listingsproject: human-vetted weekly sublets/artist housing; free upstream
+- craigslist: ~350 newest direct/private listings per fetch; free upstream
+- facebook_marketplace: opt-in via sources param; NY-filtered; freshness by ID-diff only (upstream returns no timestamps)
+- Proximity is neighborhood-centroid based in v1 — treat walk minutes as approximate.
 
 ## Resources
 
@@ -58,5 +72,5 @@ Examples of queries where this service should fire:
 - OpenAPI: {{BASE_URL}}/openapi.json
 - x402 discovery: {{BASE_URL}}/.well-known/x402
 - Verify: {{BASE_URL}}/verify
-- Source: {{REPO_URL}}
+- Source: https://github.com/mmurrs/nyc-apartment-agent
 - Framework: https://github.com/mmurrs/dual402
