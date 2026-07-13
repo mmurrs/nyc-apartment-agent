@@ -1,17 +1,21 @@
 {
-  "name": "dual402-starter",
+  "name": "nyc-apartment-agent",
   "version": "0.1.0",
-  "description": "Starter template for paid APIs on EigenCompute. Accept both x402 (Base mainnet USDC) and MPP (Tempo USDC) on every route out of the box.",
+  "description": "Natural-language NYC apartment search for agents and personal workflows. Aggregates StreetEasy, The Listings Project, Craigslist, and Facebook Marketplace; paid per request via x402/MPP; deployed verifiably on EigenCompute.",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "node server.js",
     "dev": "node --env-file=.env server.js",
-    "test": "node --test tests/smoke.mjs",
+    "test": "node --test tests/smoke.mjs tests/query.test.mjs tests/parsers.test.mjs",
     "init": "./scripts/init.sh",
     "deploy": "./scripts/deploy.sh"
   },
   "dependencies": {
+    "@layr-labs/ai-gateway-provider": "^1.0.1",
+    "@x402/evm": "^2.17.0",
+    "@x402/fetch": "^2.17.0",
+    "ai": "^6.0.0",
     "dual402": "^0.1.0",
     "express": "^5.0.0"
   },
@@ -24,6 +28,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mmurrs/dual402-starter.git"
+    "url": "git+https://github.com/mmurrs/nyc-apartment-agent.git"
   }
 }

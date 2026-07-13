@@ -11,6 +11,8 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev || npm install --omit=dev
 
 COPY server.js ./
+COPY lib ./lib
+COPY data ./data
 
 EXPOSE 8080
 CMD ["node", "server.js"]
