@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Why This Exists · NYC Apartment Agent</title>
+    <meta name="description" content="Every incumbent ships alerts and chat to humans. We ship the apartment-hunt endpoint for agents." />
+    <meta name="theme-color" content="#f4f1ea" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        --paper:      #f4f1ea;
+        --paper-2:    #ebe6da;
+        --paper-3:    #e0dac9;
+        --ink:        #141311;
+        --ink-2:      #3a362f;
+        --ink-3:      #6b6558;
+        --ink-4:      #9a9483;
+        --rule:       #c8c0aa;
+        --rule-soft:  #dbd5c2;
+        --accent:     #b7381d;
+        --accent-2:   #8a2a14;
+        --ok:         #3a5a2a;
+        --bad:        #b7381d;
+
+        --serif: "Newsreader", "Iowan Old Style", "Palatino", Georgia, serif;
+        --sans:  "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        --mono:  "JetBrains Mono", "SF Mono", ui-monospace, Consolas, monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper:      #141311;
+          --paper-2:    #1c1a16;
+          --paper-3:    #24211c;
+          --ink:        #f0ece2;
+          --ink-2:      #d1cbbb;
+          --ink-3:      #8f8976;
+          --ink-4:      #60594a;
+          --rule:       #3a3529;
+          --rule-soft:  #2a261e;
+          --accent:     #e66a4f;
+          --accent-2:   #c44a30;
+          --ok:         #8fb174;
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { background: var(--paper); }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: var(--sans);
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.5;
+        font-size: 15px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        background-image:
+          radial-gradient(rgba(20,19,17,0.025) 1px, transparent 1px);
+        background-size: 3px 3px;
+        background-position: 0 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-image:
+            radial-gradient(rgba(240,236,226,0.018) 1px, transparent 1px);
+        }
+      }
+
+      ::selection { background: var(--accent); color: var(--paper); }
+
+      a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; text-decoration-thickness: 1px; transition: text-decoration-color .15s; }
+      a:hover { text-decoration-color: var(--accent); color: var(--accent); }
+
+      .sheet {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 32px 28px 120px;
+        position: relative;
+      }
+      @media (min-width: 780px) {
+        .sheet { padding: 56px 56px 140px; }
+      }
+
+      /* ═══════════════════════════════════════════════════════ MASTHEAD */
+      .masthead {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 24px;
+        padding-bottom: 18px;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .mark {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mark::before {
+        content: "";
+        display: inline-block;
+        width: 7px; height: 7px;
+        background: var(--ink);
+        transform: rotate(45deg);
+      }
+      .mark a {
+        text-decoration: none;
+        color: var(--ink-3);
+        transition: color .15s;
+      }
+      .mark a:hover {
+        color: var(--accent);
+      }
+
+      /* ═══════════════════════════════════════════════════════ HERO */
+      .hero {
+        padding: 44px 0 36px;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      h1 {
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: clamp(40px, 6.2vw, 76px);
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+        margin: 0 0 22px;
+        color: var(--ink);
+      }
+      .lede {
+        font-family: var(--serif);
+        font-size: clamp(18px, 2vw, 22px);
+        line-height: 1.4;
+        font-weight: 400;
+        color: var(--ink-2);
+        margin: 0 0 28px;
+        max-width: 58ch;
+      }
+
+      /* ═══════════════════════════════════════════════════════ SECTIONS */
+      section {
+        padding: 40px 0 8px;
+        border-bottom: 1px solid var(--rule);
+      }
+      section:last-of-type { border-bottom: 0; }
+
+      .sec-head {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        gap: 20px;
+        align-items: baseline;
+        margin-bottom: 28px;
+      }
+      .sec-num {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 26px;
+        color: var(--accent);
+        letter-spacing: -0.01em;
+      }
+      .sec-title {
+        font-family: var(--serif);
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        margin: 0;
+        color: var(--ink);
+      }
+      @media (max-width: 620px) {
+        .sec-head { grid-template-columns: 40px 1fr; gap: 14px; }
+        .sec-num { font-size: 20px; }
+        .sec-title { font-size: 22px; }
+      }
+
+      .sec-body {
+        padding-left: 84px;
+      }
+      @media (max-width: 620px) {
+        .sec-body { padding-left: 0; }
+      }
+
+      .prose {
+        font-family: var(--serif);
+        font-size: 16.5px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        max-width: 68ch;
+      }
+      .prose p { margin: 0 0 18px; }
+      .prose strong { color: var(--ink); font-weight: 500; }
+      .prose code {
+        font-family: var(--mono);
+        font-size: 13px;
+        background: var(--paper-2);
+        padding: 1px 6px;
+        color: var(--ink);
+      }
+
+      /* ── comparison table ── */
+      .comparison {
+        overflow-x: auto;
+        margin: 0 0 28px;
+      }
+      .comparison table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--ink);
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .comparison thead {
+        background: var(--paper-2);
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .comparison th {
+        padding: 12px 16px;
+        text-align: left;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        font-weight: 500;
+        border-right: 1px solid var(--rule);
+      }
+      .comparison th:last-child { border-right: 0; }
+      .comparison td {
+        padding: 14px 16px;
+        border-top: 1px solid var(--rule);
+        border-right: 1px solid var(--rule);
+        color: var(--ink-2);
+        vertical-align: top;
+      }
+      .comparison td:last-child { border-right: 0; }
+      .comparison tbody tr:hover { background: var(--paper-2); }
+      .comparison td.cap {
+        font-family: var(--sans);
+        font-size: 13px;
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .comparison .mark-yes {
+        color: var(--ok);
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .comparison .mark-no {
+        color: var(--ink-4);
+        font-size: 16px;
+      }
+      .comparison .mark-next {
+        color: var(--ink-3);
+        font-style: italic;
+        font-size: 12px;
+      }
+
+      /* ── honest list ── */
+      .honest {
+        background: var(--paper-2);
+        border: 1px solid var(--rule);
+        padding: 28px 28px 24px;
+        margin: 0 0 28px;
+      }
+      .honest h3 {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 500;
+        color: var(--accent);
+        margin: 0 0 16px;
+      }
+      .honest ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 15.5px;
+        line-height: 1.5;
+        color: var(--ink-2);
+      }
+      .honest li {
+        padding: 10px 0;
+        border-top: 1px dashed var(--rule);
+        display: flex;
+        gap: 12px;
+      }
+      .honest li:first-child { border-top: 0; padding-top: 0; }
+      .honest li::before {
+        content: "✕";
+        color: var(--accent);
+        font-weight: 600;
+        font-style: normal;
+        flex-shrink: 0;
+      }
+      .honest strong {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      /* ── resources ── */
+      .resources {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        border: 1px solid var(--rule);
+      }
+      @media (min-width: 620px) {
+        .resources { grid-template-columns: repeat(2, 1fr); }
+      }
+      .resource-link {
+        display: block;
+        padding: 18px 20px;
+        border-top: 1px solid var(--rule);
+        margin: -1px 0 0 -1px;
+        text-decoration: none;
+        color: var(--ink);
+        transition: background .14s;
+        background: var(--paper);
+      }
+      .resource-link:hover { background: var(--paper-2); color: var(--ink); }
+      .resource-link .key {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+      }
+      .resource-link .val {
+        font-family: var(--serif);
+        font-size: 17px;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+      @media (min-width: 620px) {
+        .resource-link:nth-child(2n) { border-left: 1px solid var(--rule); }
+      }
+      .resource-link:first-child,
+      .resource-link:nth-child(2) { border-top: 0; }
+
+      /* ── footer ── */
+      footer.colophon {
+        margin-top: 80px;
+        padding: 28px 0 0;
+        border-top: 1.5px solid var(--ink);
+        font-family: var(--serif);
+        font-size: 14px;
+        color: var(--ink-2);
+        line-height: 1.5;
+      }
+      .colophon a { font-weight: 500; }
+
+      /* reveal on load */
+      .reveal { opacity: 0; transform: translateY(6px); animation: reveal .6s cubic-bezier(.2,.7,.3,1) forwards; }
+      .reveal.d1 { animation-delay: .05s; }
+      .reveal.d2 { animation-delay: .15s; }
+      .reveal.d3 { animation-delay: .25s; }
+      @keyframes reveal {
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <div class="masthead reveal d1">
+        <div class="mark">
+          <a href="/">NYC Apartment Agent</a>
+          <span aria-hidden="true">·</span> Why This Exists
+        </div>
+      </div>
+
+      <section class="hero reveal d2">
+        <h1>Every incumbent ships alerts and chat to humans. We ship the apartment-hunt endpoint for agents.</h1>
+        <p class="lede">
+          Natural-language search is commoditized — every portal added it in 2025–2026. But nobody exposes an agent-callable, per-request, pay-per-call API with structured JSON. That's the category this service occupies.
+        </p>
+      </section>
+
+      <section class="reveal d2">
+        <header class="sec-head">
+          <div class="sec-num">§ 01</div>
+          <h2 class="sec-title">How we're different</h2>
+        </header>
+        <div class="sec-body">
+          <div class="prose">
+            <p>
+              The NYC apartment-hunt landscape has seven major categories: rent-stabilized alert systems (RentReboot), speed-focused StreetEasy monitors (LeaseAlert, FirstMover), multi-source scrapers (Pounce), portal AI modes (Zillow AI, Apartments.com Ai, Zumper in ChatGPT), and 47+ GitHub repos of hunters building their own bots. All of them deliver to human inboxes or their own chat UIs.
+            </p>
+            <p>
+              None expose an agent-callable API with per-request pricing. That's the structural difference.
+            </p>
+          </div>
+
+          <div class="comparison">
+            <table>
+              <thead>
+                <tr>
+                  <th>Capability</th>
+                  <th>This service</th>
+                  <th>RentReboot</th>
+                  <th>LeaseAlert / FirstMover</th>
+                  <th>Zillow AI / portals</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cap">Natural-language constraints</td>
+                  <td><span class="mark-yes">✓</span></td>
+                  <td><span class="mark-no">✕</span> Structured filters only</td>
+                  <td><span class="mark-no">✕</span> Structured filters</td>
+                  <td><span class="mark-yes">✓</span> Chat interface</td>
+                </tr>
+                <tr>
+                  <td class="cap">Multi-source aggregation<br><span style="font-size:12px;color:var(--ink-3);font-weight:400;">StreetEasy + Listings Project + Craigslist + FB Marketplace</span></td>
+                  <td><span class="mark-yes">✓</span></td>
+                  <td><span class="mark-yes">✓</span> 100+ sources</td>
+                  <td><span class="mark-no">✕</span> StreetEasy only</td>
+                  <td><span class="mark-no">✕</span> Own inventory</td>
+                </tr>
+                <tr>
+                  <td class="cap">Agent API + per-request pricing</td>
+                  <td><span class="mark-yes">✓</span> 0.10 USDC/call</td>
+                  <td><span class="mark-no">✕</span> Email/SMS only</td>
+                  <td><span class="mark-no">✕</span> Email/SMS only</td>
+                  <td><span class="mark-no">✕</span> Human UI only</td>
+                </tr>
+                <tr>
+                  <td class="cap">Transit-native constraints<br><span style="font-size:12px;color:var(--ink-3);font-weight:400;">Subway walk times + live Citi Bike docks</span></td>
+                  <td><span class="mark-yes">✓</span></td>
+                  <td><span class="mark-no">✕</span></td>
+                  <td><span class="mark-no">✕</span></td>
+                  <td><span class="mark-no">✕</span></td>
+                </tr>
+                <tr>
+                  <td class="cap">Verifiable execution + receipts<br><span style="font-size:12px;color:var(--ink-3);font-weight:400;">TEE attestation, per-request upstream spend</span></td>
+                  <td><span class="mark-yes">✓</span></td>
+                  <td><span class="mark-no">✕</span> Black box</td>
+                  <td><span class="mark-no">✕</span> Black box</td>
+                  <td><span class="mark-no">✕</span> Black box</td>
+                </tr>
+                <tr>
+                  <td class="cap">Caller-owned state<br><span style="font-size:12px;color:var(--ink-3);font-weight:400;">/report + last_seen_ids, no accounts</span></td>
+                  <td><span class="mark-yes">✓</span></td>
+                  <td><span class="mark-no">✕</span> Account-based</td>
+                  <td><span class="mark-no">✕</span> Account-based</td>
+                  <td><span class="mark-no">✕</span> Account-based</td>
+                </tr>
+                <tr>
+                  <td class="cap">Realtime push alerts</td>
+                  <td><span class="mark-no">✕</span> Per-request scrape</td>
+                  <td><span class="mark-yes">✓</span> Email/SMS</td>
+                  <td><span class="mark-yes">✓</span> SMS</td>
+                  <td><span class="mark-yes">✓</span> Push</td>
+                </tr>
+                <tr>
+                  <td class="cap">Rent-stabilized cross-check</td>
+                  <td><span class="mark-no">✕</span></td>
+                  <td><span class="mark-yes">✓</span> HCR + city data</td>
+                  <td><span class="mark-no">✕</span></td>
+                  <td><span class="mark-no">✕</span></td>
+                </tr>
+                <tr>
+                  <td class="cap">Photo/vision filters<br><span style="font-size:12px;color:var(--ink-3);font-weight:400;">Natural light, brick walls, etc.</span></td>
+                  <td><span class="mark-next">next</span> Tested, not shipped</td>
+                  <td><span class="mark-next">roadmap</span> Since May 2025</td>
+                  <td><span class="mark-no">✕</span></td>
+                  <td><span class="mark-no">✕</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="prose">
+            <p>
+              <strong>Why aggregation across competitors is structurally ours:</strong> Zillow owns StreetEasy and will never cross-list Craigslist, The Listings Project, or Facebook Marketplace. RentReboot scrapes broadly but ships email summaries to humans. We're the only service that returns structured JSON with multi-source listings, subway walk times, and live Citi Bike availability in one call.
+            </p>
+            <p>
+              <strong>Why transit-native matters:</strong> We run <a href="https://transit402.dev" target="_blank" rel="noopener">transit402.dev</a>, the real-time NYC transit endpoint for agents. Subway walk times are bundled per listing, and Citi Bike dock availability is live (bikes + docks) at query time. No other service has micromobility constraints built in.
+            </p>
+            <p>
+              <strong>Verifiable execution:</strong> This service runs on EigenCompute (TEE-attested VM). Every response includes receipts showing exactly what the service paid upstream to answer your query — service name, route, USD amount, transaction hash. Check provenance at <code>verify.eigencloud.xyz/app/0x94D4dF7f4Fa0aF9FCF2f676840E015eD31e5d5C4</code> and the <code>/verify</code> endpoint. Alert companies are black boxes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal d3">
+        <header class="sec-head">
+          <div class="sec-num">§ 02</div>
+          <h2 class="sec-title">What we deliberately don't claim</h2>
+        </header>
+        <div class="sec-body">
+          <div class="honest">
+            <h3>Honesty is the brand</h3>
+            <ul>
+              <li>
+                <div><strong>Not faster than native StreetEasy alerts or LeaseAlert SMS.</strong> Per-request scrape ≠ realtime push. We sell breadth, structure, and composability — not latency.</div>
+              </li>
+              <li>
+                <div><strong>Vision/photo filters (natural light, brick walls) are roadmap.</strong> Tested at ~$0.013/listing, not shipped yet. Mark as "next" in any comparison.</div>
+              </li>
+              <li>
+                <div><strong>Rent-stabilized cross-check: RentReboot owns that.</strong> HCR rent-stabilized list + DOB/HPD/311/DOHMH city data is public; we may add it later.</div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="prose">
+            <p>
+              We're on a TEE with receipts. If we oversell, you can audit it. These constraints keep the positioning honest.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal d3">
+        <header class="sec-head">
+          <div class="sec-num">§ 03</div>
+          <h2 class="sec-title">Resources</h2>
+        </header>
+        <div class="sec-body">
+          <div class="resources">
+            <a class="resource-link" href="/">
+              <div class="key">Landing</div>
+              <div class="val">Service overview</div>
+            </a>
+            <a class="resource-link" href="/skill.md">
+              <div class="key">Agent skill</div>
+              <div class="val">skill.md</div>
+            </a>
+            <a class="resource-link" href="/llms.txt">
+              <div class="key">Agent discovery</div>
+              <div class="val">llms.txt</div>
+            </a>
+            <a class="resource-link" href="/openapi.json">
+              <div class="key">API schema</div>
+              <div class="val">openapi.json</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="colophon reveal d3">
+        Built with <a href="https://github.com/mmurrs/dual-402" target="_blank" rel="noopener">dual&#8209;402</a> on <a href="https://eigencloud.xyz" target="_blank" rel="noopener">EigenCompute</a>. Source on <a href="https://github.com/mmurrs/nyc-apartment-agent" target="_blank" rel="noopener">GitHub</a>.
+      </footer>
+    </main>
+  </body>
+</html>
