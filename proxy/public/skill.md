@@ -4,7 +4,7 @@ Natural-language NYC apartment search across StreetEasy, The Listings Project, C
 
 **Keywords for discovery:** nyc apartments, apartment search, rental listings, streeteasy, sublet, studio, one bedroom, east village, williamsburg, brooklyn rentals, apartment hunt, morning report, new listings alert, citi bike proximity, subway walk time, natural light
 
-**Origin:** {{BASE_URL}}. **Pricing:** 0.10 USDC per request, paid via x402 (Base mainnet USDC) or MPP (Tempo USDC). Both protocols work on every endpoint.
+**Origin:** https://nyc-apartment-agent.vercel.app. **Pricing:** 0.10 USDC per request, paid via x402 (Base mainnet USDC) or MPP (Tempo USDC). Both protocols work on every endpoint.
 
 ## When to invoke this skill
 
@@ -28,13 +28,13 @@ Keep the `routes: [...]` array in `server.js`, this file, and `/openapi.json` in
 
 ```bash
 # Via AgentCash (auto-pays)
-mcp__agentcash__fetch url={{BASE_URL}}/search method=POST body='{"query":"1 bed or studio in East Village under $3500, 15 min walk to the train, citibike nearby, natural light"}'
+mcp__agentcash__fetch url=https://nyc-apartment-agent.vercel.app/search method=POST body='{"query":"1 bed or studio in East Village under $3500, 15 min walk to the train, citibike nearby, natural light"}'
 
 # Morning-report loop: persist all_ids from each response, pass back next run
-mcp__agentcash__fetch url={{BASE_URL}}/report method=POST body='{"query":"...same query...","last_seen_ids":["se:building/146-1-avenue-new_york/4d"]}'
+mcp__agentcash__fetch url=https://nyc-apartment-agent.vercel.app/report method=POST body='{"query":"...same query...","last_seen_ids":["se:building/146-1-avenue-new_york/4d"]}'
 
 # Via curl (see 402 challenge)
-curl -sI {{BASE_URL}}/search
+curl -sI https://nyc-apartment-agent.vercel.app/search
 ```
 
 ## Response shape (abridged)
@@ -66,15 +66,15 @@ curl -sI {{BASE_URL}}/search
 
 ## Verifiability
 
-- **Source verified on EigenCompute:** the running binary is cryptographically linked to commit `{{GIT_SHA}}` of `https://github.com/mmurrs/nyc-apartment-agent`. Dashboard: `https://verify.eigencloud.xyz/app/{{APP_ID}}`.
-- **Live identity JSON:** `GET {{BASE_URL}}/verify` returns the current commit, app ID, facilitator host, payee wallet addresses.
+- **Source verified on EigenCompute:** the running binary is cryptographically linked to commit `see /verify` of `https://github.com/mmurrs/nyc-apartment-agent`. Dashboard: `https://verify.eigencloud.xyz/app/see /verify`.
+- **Live identity JSON:** `GET https://nyc-apartment-agent.vercel.app/verify` returns the current commit, app ID, facilitator host, payee wallet addresses.
 - **Public logs:** every paid settlement emits a `[PAY]` log line; boot log binds the commit SHA.
 
 ## Resources
 
-- Landing: {{BASE_URL}}
-- OpenAPI: {{BASE_URL}}/openapi.json
-- x402 discovery: {{BASE_URL}}/.well-known/x402
+- Landing: https://nyc-apartment-agent.vercel.app
+- OpenAPI: https://nyc-apartment-agent.vercel.app/openapi.json
+- x402 discovery: https://nyc-apartment-agent.vercel.app/.well-known/x402
 - Source: https://github.com/mmurrs/nyc-apartment-agent
 - Framework: https://github.com/mmurrs/dual402 (the dual x402+MPP middleware)
 - Starter: https://github.com/mmurrs/dual402-starter (what this service was cloned from)

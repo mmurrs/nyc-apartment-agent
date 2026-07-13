@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Paid API · EigenCompute attestation</title>
-    <meta name="description" content="A paid HTTP API accepting x402 and MPP, verifiably deployed on EigenCompute." />
+    <title>NYC Apartment Agent · Natural-language apartment search</title>
+    <meta name="description" content="Natural-language NYC apartment search for agents. Query in plain English, get ranked listings with subway walk times and Citi Bike proximity. 0.10 USDC per request." />
     <meta name="theme-color" content="#f4f1ea" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -758,7 +758,7 @@
   <body>
     <main class="sheet">
       <div class="masthead reveal d1">
-        <div class="mark">Dual&#8209;402 <span aria-hidden="true">·</span> Verifiable Compute Attestation</div>
+        <div class="mark">NYC Apartment Agent <span aria-hidden="true">·</span> Verifiable Compute Attestation</div>
         <div class="issue" id="masthead-issue">
           <strong>Issue</strong> <span id="issue-commit">—</span>
           <span class="sep">·</span>
@@ -772,9 +772,9 @@
             <span class="dot" id="hero-dot"></span>
             <span id="hero-status-text">Verifying attestation…</span>
           </p>
-          <h1 id="service-name">Paid API, <span class="amp">&amp;</span> the receipts to prove it.</h1>
+          <h1 id="service-name">The apartment-hunt endpoint for agents.</h1>
           <p class="lede" id="service-lede">
-            A paid HTTP API that accepts x402 on Base and MPP on Tempo, running inside a TEE on EigenCompute. Every request returns a greeting. Every line below is independently auditable.
+            Natural-language NYC apartment search across StreetEasy, The Listings Project, Craigslist, and Facebook Marketplace. Returns ranked listings with subway walk times and live Citi Bike availability. Every line below is independently auditable.
           </p>
           <div class="hero-meta" id="hero-meta">
             <span class="chip accent" id="chip-env">—</span>
@@ -811,7 +811,7 @@
         </header>
         <div class="sec-body">
           <p style="font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);margin:0 0 26px;max-width:60ch;">
-            What's running is what's on GitHub. The commit below was built reproducibly and deployed into an EigenCompute TEE; the same hash will show on the verifier dashboard and on-chain.
+            What's running is what's on GitHub. The commit below was built reproducibly and deployed into an EigenCompute TEE. Each response includes receipts showing what the service itself paid upstream to answer your query.
           </p>
           <dl class="ledger" id="ledger">
             <!-- filled by JS; skeleton rendered below -->
@@ -837,7 +837,7 @@
         </header>
         <div class="sec-body">
           <p style="font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);margin:0 0 22px;max-width:60ch;">
-            Every route returns <code style="font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 6px;">402 Payment Required</code> until a payment header is attached. Prices are declared in the route's OpenAPI spec under <code style="font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 6px;">x-payment-info</code>.
+            StreetEasy and RentReboot email humans. This endpoint answers agents in JSON. Parse natural-language constraints, get ranked listings with fit scores and proximity data. Every route returns <code style="font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 6px;">402 Payment Required</code> until a payment header is attached.
           </p>
           <div class="endpoints" id="endpoints">
             <div class="endpoints-head">
@@ -870,19 +870,19 @@
                 <button class="pay-cmd-copy" id="pay-copy" type="button">Copy</button>
               </div>
               <div class="pay-cmd-code" id="pay-cmd">
-                <span class="prompt">$</span><span class="bin">npx</span> agentcash add <span id="origin-inline">your-origin</span>
+                <span class="prompt">$</span><span class="bin">curl</span> '<span id="origin-inline">your-origin</span>/search?query=1%20bed%20or%20studio%20in%20East%20Village%20under%20$3500%2C%2015%20min%20walk%20to%20the%20train%2C%20citibike%20nearby%2C%20natural%20light'
               </div>
               <p class="pay-cmd-sub">
-                Registers this origin with AgentCash so any agent with a funded wallet can hit the paid routes over x402 or MPP. Or bring your own client: <code>@x402/fetch</code>, <code>mppx</code>, or raw HTTP with a payment header.
+                Returns HTTP 402 with payment challenge. Register with AgentCash (<code>npx agentcash add https://nyc-apartment-agent.vercel.app</code>) to auto-pay, or bring your own client: <code>@x402/fetch</code>, <code>mppx</code>, or raw HTTP with a payment header.
               </p>
             </div>
             <aside class="pay-aside">
-              <h3>How payment works</h3>
-              <p>Client hits a route. Server returns 402 with a price quote. Client attaches USDC payment; the server verifies it, settles, and returns the result — all on the same round trip.</p>
+              <h3>What you get</h3>
+              <p>Ranked listings aggregated across StreetEasy (paid render), The Listings Project, Craigslist, and Facebook Marketplace (opt-in). Each result includes fit score, subway walk minutes, and live Citi Bike docks.</p>
               <ul>
-                <li>x402 · USDC on Base</li>
-                <li>MPP · USDC on Tempo</li>
-                <li>Settled in one round trip</li>
+                <li>0.10 USDC per request</li>
+                <li>x402 (Base) or MPP (Tempo)</li>
+                <li>Receipts show upstream spend</li>
                 <li>No account, no key, no form</li>
               </ul>
             </aside>
@@ -919,7 +919,7 @@
 
       <footer class="colophon reveal d5">
         <div class="colophon-text">
-          Built with <a href="https://github.com/mmurrs/dual-402" target="_blank" rel="noopener">dual&#8209;402</a>, the middleware that speaks both x402 and MPP on a single route. Deployed on <a href="https://eigencloud.xyz" target="_blank" rel="noopener">EigenCompute</a>. Cloned from the <a href="https://github.com/mmurrs/dual402-starter" target="_blank" rel="noopener">dual402-starter</a>. Fork it, rename it, ship your own.
+          Built with <a href="https://github.com/mmurrs/dual-402" target="_blank" rel="noopener">dual&#8209;402</a>, the middleware that speaks both x402 and MPP on a single route. Deployed on <a href="https://eigencloud.xyz" target="_blank" rel="noopener">EigenCompute</a>. Source on <a href="https://github.com/mmurrs/nyc-apartment-agent" target="_blank" rel="noopener">GitHub</a>. Cloned from the <a href="https://github.com/mmurrs/dual402-starter" target="_blank" rel="noopener">dual402-starter</a>.
         </div>
         <div class="colophon-meta">
           <div id="colophon-service">—</div>
@@ -1063,10 +1063,8 @@
       const renderHero = (v, verifyOk) => {
         if (v?.service?.name) {
           const name = v.service.name;
-          document.title = `${name} · paid API on EigenCompute`;
-          // craft an h1 that uses the service name naturally
-          const h1 = $("service-name");
-          h1.innerHTML = `${escapeHTML(name)} <span class="amp">&amp;</span> the receipts to prove it.`;
+          document.title = `${name} · NYC apartment search for agents`;
+          // h1 is static in this version — no dynamic replacement
         }
 
         if (v?.runtime?.environment) {
@@ -1293,10 +1291,12 @@
       };
 
       const renderPayCmd = () => {
+        const exampleQuery = '1 bed or studio in East Village under $3500, 15 min walk to the train, citibike nearby, natural light';
+        const exampleEncoded = encodeURIComponent(exampleQuery);
         $("origin-inline").textContent = origin;
-        const payCmd = `npx agentcash add ${origin}`;
+        const fullCmd = `curl '${origin}/search?query=${exampleEncoded}'`;
         $("pay-copy").addEventListener("click", () =>
-          copyToClipboard(payCmd, $("pay-copy"))
+          copyToClipboard(fullCmd, $("pay-copy"))
         );
       };
 

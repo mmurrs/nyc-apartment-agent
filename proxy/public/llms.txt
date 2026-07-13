@@ -2,7 +2,7 @@
 
 > Natural-language NYC apartment search for agents and personal workflows. Paid per request via x402 (Base mainnet USDC) or MPP (Tempo USDC). 0.10 USDC per call.
 
-Origin: {{BASE_URL}}. Source: https://github.com/mmurrs/nyc-apartment-agent.
+Origin: https://nyc-apartment-agent.vercel.app. Source: https://github.com/mmurrs/nyc-apartment-agent.
 
 ## What this service does
 
@@ -32,14 +32,14 @@ Every paid route returns HTTP 402 with both challenge headers:
 Compatible agent clients auto-pay. The fastest onboarding:
 
 ```bash
-npx agentcash add {{BASE_URL}}
+npx agentcash add https://nyc-apartment-agent.vercel.app
 ```
 
 AgentCash handles both protocols. For protocol-specific clients: `mppx` (MPP), `@x402/fetch` (x402).
 
 ## How to verify this service
 
-- **Source verified.** The binary running in production is cryptographically linked to a specific commit of the public source repo. Audit provenance at `https://verify.eigencloud.xyz/app/{{APP_ID}}`.
+- **Source verified.** The binary running in production is cryptographically linked to a specific commit of the public source repo. Audit provenance at `https://verify.eigencloud.xyz/app/see /verify`.
 - **Runs on EigenCompute.** TEE-attested VM with public logs. The `[BOOT]` line identifies the exact commit SHA, facilitator, and payee wallet.
 - **Live identity endpoint.** `GET /verify` returns the current service identity as JSON.
 - **Receipts.** Each response lists what the service paid upstream (service, route, usd, tx) to produce your answer.
@@ -67,10 +67,10 @@ nyc apartments, apartment search, rental listings, streeteasy, listings project,
 
 ## Resources
 
-- Landing: {{BASE_URL}}
-- Skill: {{BASE_URL}}/skill.md
-- OpenAPI: {{BASE_URL}}/openapi.json
-- x402 discovery: {{BASE_URL}}/.well-known/x402
-- Verify: {{BASE_URL}}/verify
+- Landing: https://nyc-apartment-agent.vercel.app
+- Skill: https://nyc-apartment-agent.vercel.app/skill.md
+- OpenAPI: https://nyc-apartment-agent.vercel.app/openapi.json
+- x402 discovery: https://nyc-apartment-agent.vercel.app/.well-known/x402
+- Verify: https://nyc-apartment-agent.vercel.app/verify
 - Source: https://github.com/mmurrs/nyc-apartment-agent
 - Framework: https://github.com/mmurrs/dual402
