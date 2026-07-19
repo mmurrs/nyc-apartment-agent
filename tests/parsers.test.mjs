@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { parseSearchMarkdown, buildSearchUrl } from "../lib/sources/streeteasy.js";
+import { pickCategories } from "../lib/sources/craigslist.js";
 import { diffAgainstSeen } from "../lib/search.js";
 import { nearestSubway, findNeighborhood, walkMinutes } from "../lib/geo.js";
 
@@ -32,6 +33,12 @@ Time Equities
   assert.equal(listings[1].price_monthly, 2995);
   assert.equal(listings[1].beds, 0);
   assert.ok(listings[0].id.startsWith("se:building/"));
+});
+
+test("craigslist category selection follows sublet intent", () => {
+  assert.deepEqual(pickCategories({ sublet: true }), ["sub", "apa"]);
+  assert.deepEqual(pickCategories({ sublet: false }), ["apa"]);
+  assert.deepEqual(pickCategories({}), ["apa"]);
 });
 
 test("diffAgainstSeen returns only fresh listings", () => {
